@@ -15,21 +15,36 @@ import HouseIcon from '@mui/icons-material/House';
 import gatorlogo from './images/gatorlogo.jpg';
 import { useState } from 'react';
 import Link from '@mui/material/Link';
+import axios from 'axios';
 
 const pages = ['Sign Up', 'About'];
-const loggedin = ['Dashboard', 'Account', 'Logout'];
+const loggedin = ['AddResources', 'LogOut'];
 const loggedout = ['Log In'];
 
 // comment so I can open a new PR
 
 // Code for a drop down NavMenu is in here but not being used
 
-function NavBar() {
+function NavBar(propss) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   // eventually need an event occuring on log in page to change state, setToken removed for eslint purposes
-  const [token] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  React.useEffect(() => {
+    axios.get(`http://localhost:3001/api/isloggedin`, { withCredentials: true }).then((d) => {
+      console.log(d);
+      //window.location.href = '/Log%In';
+      console.log(d.data);
+      var response = d.data;
+      if (response == 'Not logged in :-(') {
+        setIsLoggedIn(false);
+      } else {
+        setIsLoggedIn(true);
+      }
+    });
+  }, [propss.loggedInStatusChange]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -137,52 +152,42 @@ function NavBar() {
                 <Avatar alt="Gator Logo" src={gatorlogo} />
               </IconButton>
             </Tooltip>
-          
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}>
-                {token 
+
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}>
+              {isLoggedIn
                 ? loggedin.map((loggedin) => (
-                  <MenuItem key={loggedin} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">
-                      <Link 
-                        href={`/${loggedin}`} 
-                        sx = {{color: 'black'}}
-                        underline = "none">
+                    <MenuItem key={loggedin} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        <Link href={`/${loggedin}`} sx={{ color: 'black' }} underline="none">
                           {loggedin}
                         </Link>
-                    </Typography>
-                  </MenuItem> 
-                ))
+                      </Typography>
+                    </MenuItem>
+                  ))
                 : loggedout.map((loggedout) => (
-                  <MenuItem key={loggedout} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">
-                      <Link 
-                        href={`/${loggedout}`} 
-                        sx = {{color: 'black'}}
-                        underline = "none"
-                        >
+                    <MenuItem key={loggedout} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        <Link href={`/${loggedout}`} sx={{ color: 'black' }} underline="none">
                           {loggedout}
                         </Link>
-                    </Typography>
-                  </MenuItem> 
-                ))}
-                
-              </Menu>
-              
-      
+                      </Typography>
+                    </MenuItem>
+                  ))}
+            </Menu>
           </Box>
         </Toolbar>
       </Container>

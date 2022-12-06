@@ -30,7 +30,7 @@ export default function FilteredListView(propss) {
       lon = position.coords.longitude;
       axios
         .get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBkW9_W0_3RA0eJ7zddGbVj667mZe--cPM`,
+          {}`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBkW9_W0_3RA0eJ7zddGbVj667mZe--cPM`,
           {}
         )
         .then((response) => {
@@ -56,7 +56,7 @@ export default function FilteredListView(propss) {
     console.log(paramsArray);
     axios
       .get(`http://localhost:3001/api/filterResources/`, {
-        params: { paramsArray } //TODO - THE DEFAULT FOR THIS SHOULD BE ZIP CODE (LOCATION BASED IN BROWSER)
+        body: { paramsArray } //TODO - THE DEFAULT FOR THIS SHOULD BE ZIP CODE (LOCATION BASED IN BROWSER)
       })
       .then((response) => {
         console.log('we got to the place');
